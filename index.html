@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridApex - Letöltés / Download</title>
+    <style>
+        :root {
+            --bg-color: #08080a;
+            --card-bg: rgba(20, 20, 26, 0.85);
+            --red-main: #ff1e43;
+            --red-glow: rgba(255, 30, 67, 0.4);
+            --green-main: #00e676;
+            --green-glow: rgba(0, 230, 118, 0.4);
+            --text-white: #ffffff;
+            --text-gray: #a0a0ab;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background-image: 
+                radial-gradient(circle at 50% 30%, rgba(255, 30, 67, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(0, 230, 118, 0.08) 0%, transparent 50%);
+        }
+
+        /* HEADER & LANG SWITCHER */
+        header {
+            width: 100%;
+            max-width: 900px;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--red-main);
+            text-shadow: 0 0 10px var(--red-glow);
+        }
+
+        .lang-switcher {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            padding: 6px 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--red-main);
+            color: #fff;
+            box-shadow: 0 0 10px var(--red-glow);
+        }
+
+        /* MAIN DOWNLOAD CARD */
+        .download-card {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 25px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--red-main), var(--green-main));
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 30, 67, 0.15);
+            color: var(--red-main);
+            border: 1px solid var(--red-main);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite alternate;
+        }
+
+        .download-card h1 {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .download-card p {
+            color: var(--text-gray);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* DISABLED BUTTON / LOCK AREA */
+        .download-action {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .btn-disabled {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            background: #202025;
+            color: #60606a;
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: not-allowed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .lock-icon {
+            font-size: 1.2rem;
+        }
+
+        .notice-text {
+            font-size: 0.85rem;
+            color: var(--green-main);
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
+        /* SIDE NOTE BOX */
+        .side-note {
+            background: rgba(15, 15, 20, 0.9);
+            border-left: 4px solid var(--red-main);
+            border-radius: 0 10px 10px 0;
+            padding: 15px;
+            text-align: left;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .side-note strong {
+            color: #fff;
+        }
+
+        .version-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+        .v-dev { background: rgba(255, 30, 67, 0.2); color: var(--red-main); border: 1px solid var(--red-main); }
+        .v-rel { background: rgba(0, 230, 118, 0.2); color: var(--green-main); border: 1px solid var(--green-main); }
+
+        /* ANIMATIONS */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px rgba(255, 30, 67, 0.2); }
+            100% { box-shadow: 0 0 15px rgba(255, 30, 67, 0.5); }
+        }
+
+        @media (max-width: 600px) {
+            .download-card { padding: 30px 18px; }
+            .download-card h1 { font-size: 1.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER / LANG SWITCHER -->
+    <header>
+        <div class="logo">Grid<span>Apex</span></div>
+        <div class="lang-switcher">
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+            <button class="lang-btn active" onclick="setLanguage('hu')">HU</button>
+        </div>
+    </header>
+
+    <!-- DOWNLOAD CARD -->
+    <div class="download-card">
+        <span class="status-badge" id="status-badge">Még Nem Elérhető</span>
+        
+        <h1 id="title">A Játék Még Nem Megjelent</h1>
+        
+        <p id="description">
+            A GridApex jelenleg aktív fejlesztés alatt áll. A legfrissebb verzió még nem letölthető, mivel a pályák, járművek és rendszerek építése folyamatban van.
+        </p>
+
+        <!-- DISABLED BUTTON -->
+        <div class="download-action">
+            <button class="btn-disabled" disabled>
+                <span class="lock-icon">🔒</span>
+                <span id="btn-text">Letöltés Nem Elérhető</span>
+            </button>
+            <div class="notice-text" id="notice-text">
+                ⚡ Kövesd a frissítési ütemtervet a megjelenésig!
+            </div>
+        </div>
+
+        <!-- SIDE NOTE SECTION -->
+        <div class="side-note">
+            <strong>Side Note:</strong> <span id="note-body">Jelenleg a <span class="version-tag v-dev">DEV 0</span> verzió fut a fejlesztői környezetben. A letöltés a hivatalos <span class="version-tag v-rel">RELEASED 1</span> kiadásakor válik elérhetővé.</span>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT FOR LANG SWITCHING -->
+    <script>
+        const translations = {
+            hu: {
+                statusBadge: "Még Nem Elérhető",
+                title: "A Játék Még Nem Megjelent",
+                description: "A GridApex jelenleg aktív fejlesztés alatt áll. A legfrissebb verzió még nem letölthető, mivel a pályák, járművek és rendszerek építése folyamatban van.",
+                btnText: "Letöltés Nem Elérhető",
+                noticeText: "⚡ Kövesd a frissítési ütemtervet a megjelenésig!",
+                noteBody: 'Jelenleg a <span class="version-tag v-dev">DEV 0</span> verzió fut a fejlesztői környezetben. A letöltés a hivatalos <span class="version-tag v-rel">RELEASED 1</span> kiadásakor válik elérhetővé.'
+            },
+            en: {
+                statusBadge: "Not Available Yet",
+                title: "Game Not Released Yet",
+                description: "GridApex is currently under active development. The latest build is not yet downloadable as tracks, vehicles, and core systems are being built.",
+                btnText: "Download Unavailable",
+                noticeText: "⚡ Follow the update roadmap until launch!",
+                noteBody: 'Currently running version <span class="version-tag v-dev">DEV 0</span> in the development environment. Downloads will open upon <span class="version-tag v-rel">RELEASED 1</span> official launch.'
+            }
+        };
+
+        function setLanguage(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            if(lang === 'hu') {
+                document.querySelectorAll('.lang-btn')[1].classList.add('active');
+            } else {
+                document.querySelectorAll('.lang-btn')[0].classList.add('active');
+            }
+
+            const t = translations[lang];
+
+            document.getElementById('status-badge').innerText = t.statusBadge;
+            document.getElementById('title').innerText = t.title;
+            document.getElementById('description').innerText = t.description;
+            document.getElementById('btn-text').innerText = t.btnText;
+            document.getElementById('notice-text').innerText = t.noticeText;
+            document.getElementById('note-body').innerHTML = t.noteBody;
+        }
+    </script>
+</body>
+  </html>
